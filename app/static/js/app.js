@@ -28,6 +28,66 @@ Vue.component('app-footer', {
     `
 });
 
+const UploadForm=Vue.component('upload-form', {
+    template: `
+        <h1>Upload</h1>
+        <div>
+        <ul class="list">
+            <li v-for="message in messages"class="list">
+                {{message.message }}
+                {{message.error}}
+            </li>
+            <li v-for="resp in error"class="list">
+                {{message.error[0]}} <br>
+                {{message.error[1]}}
+            </li>
+        </ul>
+            <form id="uploadForm"  @submit.prevent="uploadPhoto" method="POST" enctype="multipart/form-data">
+                <div>
+                <label for="desc">Description:</label>
+                <textarea id="desc" name="description"></textarea><br>
+                <input type="file" name="upload"/>
+                </div>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+        </div>
+    `,
+    data: function() {
+       return {
+           messages: [],
+           error: []
+       };
+    },
+    methods: {
+        uploadPhoto: function () {
+            let self = this;
+            let uploadForm = document.getElementById('uploadForm');
+            let form_data = new FormData(uploadForm);
+            fetch("/api/upload", { 
+                method: 'POST', 
+                body: form_data,
+                headers: {
+                    'X-CSRFToken': token
+                },
+                credentials: 'same-origin'
+            })
+                .then(function (response) {
+                return response.json();
+                })
+                .then(function (jsonResponse) {
+                // display a success message
+                console.log(jsonResponse);
+                self.response = jsonResponse.result;
+                self.error = jsonResponse.errors;
+                })
+                .catch(function (error) {
+                console.log(error);
+            });
+        }
+    }
+});
+
 const Home = Vue.component('home', {
    template: `
     <div class="jumbotron">
@@ -43,7 +103,8 @@ const Home = Vue.component('home', {
 // Define Routes
 const router = new VueRouter({
     routes: [
-        { path: "/", component: Home }
+        { path: "/", component: Home },
+        { path: "/upload/", component: UploadForm }
     ]
 });
 
