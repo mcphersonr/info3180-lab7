@@ -20,7 +20,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/api/upload', methods=['POST','GET'])
+@app.route('/api/upload', methods=['POST'])
 def upload():
     form=UploadForm()
     if request.method == "POST" and form.validate_on_submit():
@@ -28,11 +28,8 @@ def upload():
         file = request.files['upload']
         filename = secure_filename(file.filename)
         file.save(os.path.join(uploadfolder, filename))
-        message = [{'message': 'File Upload Successful', 'filename': filename, 'description': description}]
-        return jsonify(result=message)
-    errors_form = form_errors(form)
-    error = [{'error': errors_form}]
-    return  jsonify(errors=error)
+        return jsonify(messages=[{'message': 'File Upload Successful', 'filename': filename, 'description': description}])
+    return  jsonify(errors=[{'error': form_errors(form)}])
 
 # Here we define a function to collect form errors from Flask-WTF
 # which we can later use

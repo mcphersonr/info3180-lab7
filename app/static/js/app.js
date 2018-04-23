@@ -12,6 +12,9 @@ Vue.component('app-header', {
           <li class="nav-item active">
             <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
           </li>
+          <li class="nav-item active">
+            <router-link class="nav-link" to="/upload">Upload <span class="sr-only">(current)</span></router-link>
+          </li>
         </ul>
       </div>
     </nav>
@@ -28,28 +31,30 @@ Vue.component('app-footer', {
     `
 });
 
-const UploadForm=Vue.component('upload-form', {
+const Uploadform=Vue.component('upload-form', {
     template: `
+        <div class=upload>
         <h1>Upload</h1>
-        <div>
         <ul class="list">
             <li v-for="message in messages"class="list">
-                {{message.message }}
-                {{message.error}}
+                {{message.messages[message]}}
+                {{message.messages[filename]}}
             </li>
-            <li v-for="resp in error"class="list">
-                {{message.error[0]}} <br>
-                {{message.error[1]}}
+            <li v-for="error in error"class="list">
+                {{error.error[0]}} <br>
+                {{error.error[1]}}
             </li>
         </ul>
-            <form id="uploadForm"  @submit.prevent="uploadPhoto" method="POST" enctype="multipart/form-data">
-                <div>
-                <label for="desc">Description:</label>
-                <textarea id="desc" name="description"></textarea><br>
-                <input type="file" name="upload"/>
-                </div>
-                <button type="submit">Upload</button>
-            </form>
+        <form id="uploadform"  @submit.prevent="uploadPhoto" method="POST" enctype="multipart/form-data">
+            <label for="desc">Description:</label>
+            <br>
+            <textarea class="form-control" rows="3" id="desc" name="description"></textarea>
+            <br><br>
+            <input class="form-control-file" type="file"  name="upload"/>
+            <br>
+            <br>
+            <button class="btn btn-primary" type="submit">Upload</button>
+        </form>
         </div>
         </div>
     `,
@@ -62,7 +67,7 @@ const UploadForm=Vue.component('upload-form', {
     methods: {
         uploadPhoto: function () {
             let self = this;
-            let uploadForm = document.getElementById('uploadForm');
+            let uploadForm = document.getElementById('uploadform');
             let form_data = new FormData(uploadForm);
             fetch("/api/upload", { 
                 method: 'POST', 
@@ -104,7 +109,7 @@ const Home = Vue.component('home', {
 const router = new VueRouter({
     routes: [
         { path: "/", component: Home },
-        { path: "/upload/", component: UploadForm }
+        { path: "/upload/", component: Uploadform }
     ]
 });
 
