@@ -37,8 +37,8 @@ const Uploadform=Vue.component('upload-form', {
         <h1>Upload</h1>
         <ul class="list">
             <li v-for="message in messages"class="list">
-                {{message.messages[message]}}
-                {{message.messages[filename]}}
+                {{message.message}}
+                {{message.filename}}
             </li>
             <li v-for="error in error"class="list">
                 {{error.error[0]}} <br>
@@ -83,7 +83,7 @@ const Uploadform=Vue.component('upload-form', {
                 .then(function (jsonResponse) {
                 // display a success message
                 console.log(jsonResponse);
-                self.response = jsonResponse.result;
+                self.messages = jsonResponse.messages;
                 self.error = jsonResponse.errors;
                 })
                 .catch(function (error) {
